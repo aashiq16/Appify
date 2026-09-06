@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Catch The Spider</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background: #000;
+    cursor: crosshair;
+}
+
+
+/* =========================================================
+   MAIN SCENE
+========================================================= */
+
+.scene {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.background {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    z-index: 1;
+
+    user-select: none;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CENTER MASK
+========================================================= */
+
+.center-mask {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 150px;
+    height: 150px;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0, 0, 0, .96) 0%,
+            rgba(0, 0, 0, .90) 35%,
+            rgba(0, 0, 0, .55) 65%,
+            rgba(0, 0, 0, 0) 100%
+        );
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   RED ATMOSPHERE
+========================================================= */
+
+.red-atmosphere {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 0% 80%,
+            rgba(130, 0, 10, .12),
+            transparent 38%
+        ),
+
+        radial-gradient(
+            ellipse at 100% 70%,
+            rgba(130, 0, 10, .10),
+            transparent 40%
+        );
+
+    mix-blend-mode: screen;
+}
+
+
+/* =========================================================
+   CATCH THE SPIDER TITLE
+========================================================= */
+
+.catch-title {
+    position: absolute;
+
+    left: 50%;
+    top: 25%;
+
+    width: 760px;
+    height: 150px;
+
+    transform: translateX(-50%);
+
+    z-index: 8;
+
+    pointer-events: none;
+
+    overflow: visible;
+}
+
+.catch-title svg {
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   TITLE TEXT
+========================================================= */
+
+.title-white {
+    fill: #ffffff;
+}
+
+.title-red {
+    fill: #d40000;
+}
+
+
+/* =========================================================
+   MAIN FONT
+========================================================= */
+
+.catch-title text,
+.congratulations-title text,
+.caught-message {
+
+    font-family:
+        Arial Black,
+        Impact,
+        sans-serif;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   CATCH TITLE FONT
+========================================================= */
+
+.catch-title text {
+
+    font-size: 54px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   CONGRATULATIONS CONTAINER
+========================================================= */
+
+.congratulations-title {
+
+    position: absolute;
+
+    left: 50%;
+    top: 25%;
+
+    width: 900px;
+    height: 230px;
+
+    transform: translateX(-50%);
+
+    z-index: 30;
+
+    pointer-events: none;
+
+    overflow: visible;
+
+    opacity: 0;
+
+    visibility: hidden;
+}
+
+
+/* =========================================================
+   SHOW CONGRATULATIONS
+========================================================= */
+
+.congratulations-title.show {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    animation:
+        congratulationsIn .7s ease-out forwards;
+}
+
+
+/* =========================================================
+   CONGRATULATIONS SVG
+========================================================= */
+
+.congratulations-title svg {
+
+    width: 100%;
+    height: 150px;
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   CONGRATULATIONS FONT
+========================================================= */
+
+.congratulations-title text {
+
+    font-size: 54px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   STRAIGHT MESSAGE
+========================================================= */
+
+.caught-message {
+
+    position: absolute;
+
+    left: 50%;
+    top: 135px;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+    font-size: 28px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    color: #d40000;
+
+    text-shadow:
+        0 2px 0 #ffffff;
+
+    opacity: 0;
+
+    animation:
+        messageIn .6s ease-out .25s forwards;
+}
+
+
+/* =========================================================
+   CONGRATULATIONS ANIMATION
+========================================================= */
+
+@keyframes congratulationsIn {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            scale(.75);
+    }
+
+    70% {
+
+        transform:
+            translateX(-50%)
+            scale(1.05);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   MESSAGE ANIMATION
+========================================================= */
+
+@keyframes messageIn {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            translateY(10px);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SPIDER
+========================================================= */
+
+.spider {
+
+    position: absolute;
+
+    width: 125px;
+    height: 125px;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(0deg);
+
+    transform-origin: center;
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    will-change:
+        left,
+        top,
+        transform;
+
+    filter:
+        drop-shadow(
+            0 2px 2px rgba(0, 0, 0, .9)
+        )
+
+        drop-shadow(
+            0 0 5px rgba(255, 255, 255, .15)
+        );
+
+    transition:
+        opacity .35s ease,
+        filter .35s ease;
+}
+
+
+/* =========================================================
+   CAUGHT SPIDER
+========================================================= */
+
+.spider.caught {
+
+    opacity: 0;
+
+    filter:
+        drop-shadow(
+            0 0 20px rgba(255, 0, 0, .8)
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   SPIDER SVG
+========================================================= */
+
+.spider-svg {
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   SPIDER LEGS
+========================================================= */
+
+.leg {
+
+    fill: none;
+
+    stroke: #f5f5f5;
+
+    stroke-width: 5;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.leg-hair {
+
+    fill: none;
+
+    stroke: #fff;
+
+    stroke-width: 1;
+
+    stroke-linecap: round;
+
+    opacity: .65;
+}
+
+
+/* =========================================================
+   SPIDER BODY
+========================================================= */
+
+.body {
+
+    fill: #f4f4f4;
+
+    stroke: #fff;
+
+    stroke-width: 1;
+}
+
+.body-dark {
+
+    fill: #080808;
+
+    opacity: .62;
+}
+
+.body-highlight {
+
+    fill: #fff;
+
+    opacity: .55;
+}
+
+
+/* =========================================================
+   EYES
+========================================================= */
+
+.eye {
+    fill: #050505;
+}
+
+
+/* =========================================================
+   LEG GROUPS
+========================================================= */
+
+.leg-group {
+
+    transform-box: fill-box;
+
+    transform-origin: center;
+}
+
+
+/* =========================================================
+   WALKING ANIMATION
+========================================================= */
+
+.walking .group-a {
+
+    animation:
+        stepA .38s ease-in-out infinite;
+}
+
+.walking .group-b {
+
+    animation:
+        stepB .38s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   WALK A
+========================================================= */
+
+@keyframes stepA {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+    }
+
+    20% {
+        transform:
+            translate(-4px, -6px)
+            rotate(-4deg);
+    }
+
+    45% {
+        transform:
+            translate(-8px, -9px)
+            rotate(-7deg);
+    }
+
+    65% {
+        transform:
+            translate(5px, 3px)
+            rotate(4deg);
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+    }
+}
+
+
+/* =========================================================
+   WALK B
+========================================================= */
+
+@keyframes stepB {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+    }
+
+    20% {
+        transform:
+            translate(5px, 3px)
+            rotate(4deg);
+    }
+
+    45% {
+        transform:
+            translate(8px, 7px)
+            rotate(7deg);
+    }
+
+    65% {
+        transform:
+            translate(-5px, -3px)
+            rotate(-4deg);
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+    }
+}
+
+
+/* =========================================================
+   BODY BOUNCE
+========================================================= */
+
+.walking .body-container {
+
+    animation:
+        bodyBounce .38s ease-in-out infinite;
+}
+
+@keyframes bodyBounce {
+
+    0%,
+    100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(-2px);
+    }
+}
+
+
+/* =========================================================
+   IDLE MOVEMENT
+========================================================= */
+
+.idle .body-container {
+
+    animation:
+        idle .8s ease-in-out infinite alternate;
+}
+
+@keyframes idle {
+
+    from {
+        transform:
+            translateY(0);
+    }
+
+    to {
+        transform:
+            translateY(-1px);
+    }
+}
+
+
+/* =========================================================
+   CLICK EFFECT
+========================================================= */
+
+.click-point {
+
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .7);
+
+    border-radius: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    animation:
+        clickPulse .6s ease-out forwards;
+}
+
+@keyframes clickPulse {
+
+    0% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+
+        opacity: .9;
+    }
+
+    100% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(5);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .spider {
+
+        width: 90px;
+        height: 90px;
+    }
+
+
+    .center-mask {
+
+        width: 110px;
+        height: 110px;
+    }
+
+
+    .catch-title {
+
+        width: 95vw;
+        height: 120px;
+
+        top: 27%;
+    }
+
+
+    .catch-title text {
+
+        font-size: 34px;
+
+        letter-spacing: 1px;
+    }
+
+
+    .congratulations-title {
+
+        width: 100vw;
+
+        height: 200px;
+
+        top: 27%;
+    }
+
+
+    .congratulations-title svg {
+
+        height: 120px;
+    }
+
+
+    .congratulations-title text {
+
+        font-size: 32px;
+
+        letter-spacing: 1px;
+    }
+
+
+    .caught-message {
+
+        top: 110px;
+
+        font-size: 20px;
+
+        letter-spacing: .5px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div
+    class="scene"
+    id="scene"
+>
+
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<img
+    class="background"
+    src="web-background.png"
+    alt=""
+>
+
+
+<!-- =====================================================
+     CENTER MASK
+===================================================== -->
+
+<div class="center-mask"></div>
+
+
+<!-- =====================================================
+     RED ATMOSPHERE
+===================================================== -->
+
+<div class="red-atmosphere"></div>
+
+
+<!-- =====================================================
+     CATCH THE SPIDER
+===================================================== -->
+
+<div
+    class="catch-title"
+    id="catchTitle"
+>
+
+    <svg
+        viewBox="0 0 760 150"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+
+        <defs>
+
+            <path
+                id="titleCurve"
+                d="M 70 100 Q 380 5 690 100"
+            />
+
+        </defs>
+
+
+        <!-- WHITE LOWER EDGE -->
+
+        <text
+            class="title-white"
+            dy="5"
+        >
+
+            <textPath
+                href="#titleCurve"
+                startOffset="50%"
+                text-anchor="middle"
+            >
+                CATCH THE SPIDER
+            </textPath>
+
+        </text>
+
+
+        <!-- RED MAIN TEXT -->
+
+        <text
+            class="title-red"
+        >
+
+            <textPath
+                href="#titleCurve"
+                startOffset="50%"
+                text-anchor="middle"
+            >
+                CATCH THE SPIDER
+            </textPath>
+
+        </text>
+
+    </svg>
+
+</div>
+
+
+<!-- =====================================================
+     CONGRATULATIONS
+===================================================== -->
+
+<div
+    class="congratulations-title"
+    id="congratulationsTitle"
+>
+
+    <svg
+        viewBox="0 0 900 170"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+
+        <defs>
+
+            <path
+                id="congratulationsCurve"
+                d="M 70 105 Q 450 5 830 105"
+            />
+
+        </defs>
+
+
+        <!-- =================================================
+             WHITE LOWER EDGE
+        ================================================= -->
+
+        <text
+            class="title-white"
+            dy="5"
+        >
+
+            <textPath
+                href="#congratulationsCurve"
+                startOffset="50%"
+                text-anchor="middle"
+            >
+                Congratulations!
+            </textPath>
+
+        </text>
+
+
+        <!-- =================================================
+             RED MAIN TEXT
+        ================================================= -->
+
+        <text
+            class="title-red"
+        >
+
+            <textPath
+                href="#congratulationsCurve"
+                startOffset="50%"
+                text-anchor="middle"
+            >
+                Congratulations!
+            </textPath>
+
+        </text>
+
+    </svg>
+
+
+    <!-- =================================================
+         STRAIGHT MESSAGE
+    ================================================= -->
+
+    <div class="caught-message">
+        you caught the spider!
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SPIDER
+===================================================== -->
+
+<div
+    class="spider idle"
+    id="spider"
+>
+
+<svg
+    class="spider-svg"
+    viewBox="0 0 400 400"
+    xmlns="http://www.w3.org/2000/svg"
+>
+
+
+<defs>
+
+    <filter id="spiderTexture">
+
+        <feTurbulence
+            type="fractalNoise"
+            baseFrequency=".06"
+            numOctaves="2"
+            seed="12"
+            result="noise"
+        />
+
+        <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="1.5"
+        />
+
+    </filter>
+
+</defs>
+
+
+<!-- =====================================================
+     BACK LEFT LEG
+===================================================== -->
+
+<g class="leg-group group-a">
+
+    <path
+        class="leg"
+        d="
+            M188 190
+            C160 165
+            125 125
+            90 82
+            C65 52
+            45 30
+            22 14
+        "
+    />
+
+    <path
+        class="leg-hair"
+        d="
+            M90 82 L72 72
+            M65 52 L50 44
+            M45 30 L32 25
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     LEFT SECOND LEG
+===================================================== -->
+
+<g class="leg-group group-b">
+
+    <path
+        class="leg"
+        d="
+            M184 204
+            C145 190
+            108 165
+            70 140
+            C43 122
+            22 108
+            7 98
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     LEFT THIRD LEG
+===================================================== -->
+
+<g class="leg-group group-a">
+
+    <path
+        class="leg"
+        d="
+            M180 220
+            C140 218
+            105 214
+            67 205
+            C39 198
+            18 190
+            3 183
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     LEFT FRONT LEG
+===================================================== -->
+
+<g class="leg-group group-b">
+
+    <path
+        class="leg"
+        d="
+            M185 235
+            C151 250
+            118 275
+            84 300
+            C59 319
+            40 340
+            25 365
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     RIGHT BACK LEG
+===================================================== -->
+
+<g class="leg-group group-b">
+
+    <path
+        class="leg"
+        d="
+            M212 190
+            C240 165
+            275 125
+            310 82
+            C335 52
+            355 30
+            378 14
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     RIGHT SECOND LEG
+===================================================== -->
+
+<g class="leg-group group-a">
+
+    <path
+        class="leg"
+        d="
+            M216 204
+            C255 190
+            292 165
+            330 140
+            C357 122
+            378 108
+            393 98
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     RIGHT THIRD LEG
+===================================================== -->
+
+<g class="leg-group group-b">
+
+    <path
+        class="leg"
+        d="
+            M220 220
+            C260 218
+            295 214
+            333 205
+            C361 198
+            382 190
+            397 183
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     RIGHT FRONT LEG
+===================================================== -->
+
+<g class="leg-group group-a">
+
+    <path
+        class="leg"
+        d="
+            M215 235
+            C249 250
+            282 275
+            316 300
+            C341 319
+            360 340
+            375 365
+        "
+    />
+
+</g>
+
+
+<!-- =====================================================
+     BODY
+===================================================== -->
+
+<g
+    class="body-container"
+    filter="url(#spiderTexture)"
+>
+
+    <!-- ABDOMEN -->
+
+    <ellipse
+        class="body"
+        cx="200"
+        cy="270"
+        rx="43"
+        ry="70"
+    />
+
+
+    <ellipse
+        class="body-dark"
+        cx="211"
+        cy="282"
+        rx="22"
+        ry="52"
+    />
+
+
+    <ellipse
+        class="body-highlight"
+        cx="187"
+        cy="247"
+        rx="7"
+        ry="20"
+    />
+
+
+    <ellipse
+        class="body-highlight"
+        cx="193"
+        cy="280"
+        rx="6"
+        ry="18"
+    />
+
+
+    <!-- THORAX -->
+
+    <ellipse
+        class="body"
+        cx="200"
+        cy="190"
+        rx="45"
+        ry="41"
+    />
+
+
+    <ellipse
+        class="body-dark"
+        cx="213"
+        cy="194"
+        rx="16"
+        ry="23"
+    />
+
+
+    <!-- HEAD -->
+
+    <ellipse
+        class="body"
+        cx="200"
+        cy="149"
+        rx="29"
+        ry="27"
+    />
+
+
+    <!-- EYES -->
+
+    <circle
+        class="eye"
+        cx="185"
+        cy="141"
+        r="3.5"
+    />
+
+    <circle
+        class="eye"
+        cx="195"
+        cy="137"
+        r="3.5"
+    />
+
+    <circle
+        class="eye"
+        cx="205"
+        cy="137"
+        r="3.5"
+    />
+
+    <circle
+        class="eye"
+        cx="215"
+        cy="141"
+        r="3.5"
+    />
+
+
+    <!-- FANGS -->
+
+    <path
+        d="
+            M188 164
+            L193 178
+            L197 164
+        "
+        fill="#fff"
+    />
+
+
+    <path
+        d="
+            M212 164
+            L207 178
+            L203 164
+        "
+        fill="#fff"
+    />
+
+</g>
+
+
+<!-- =====================================================
+     BODY HAIRS
+===================================================== -->
+
+<g
+    stroke="#fff"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    opacity=".65"
+>
+
+    <path d="M165 181 L149 174"/>
+    <path d="M161 193 L143 191"/>
+
+    <path d="M235 181 L251 174"/>
+    <path d="M239 193 L257 191"/>
+
+    <path d="M173 250 L156 243"/>
+    <path d="M227 250 L244 243"/>
+
+    <path d="M172 292 L156 298"/>
+    <path d="M228 292 L244 298"/>
+
+</g>
+
+
+</svg>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const scene =
+    document.getElementById("scene");
+
+const spider =
+    document.getElementById("spider");
+
+const catchTitle =
+    document.getElementById("catchTitle");
+
+const congratulationsTitle =
+    document.getElementById(
+        "congratulationsTitle"
+    );
+
+
+/* =========================================================
+   SPIDER POSITION
+========================================================= */
+
+let spiderX =
+    window.innerWidth / 2;
+
+let spiderY =
+    window.innerHeight / 2;
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let attempts = 0;
+
+let gameOver = false;
+
+let movementTimer = null;
+
+
+/*
+   Random catch attempt:
+   3, 4, 5 or 6
+*/
+
+const catchAttempt =
+    Math.floor(
+        Math.random() * 4
+    ) + 3;
+
+
+/* =========================================================
+   INITIAL POSITION
+========================================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        spider.style.left =
+            spiderX + "px";
+
+        spider.style.top =
+            spiderY + "px";
+
+    }
+);
+
+
+/* =========================================================
+   CLICK EFFECT
+========================================================= */
+
+function createClickEffect(
+    x,
+    y
+){
+
+    const point =
+        document.createElement(
+            "div"
+        );
+
+    point.className =
+        "click-point";
+
+    point.style.left =
+        x + "px";
+
+    point.style.top =
+        y + "px";
+
+    scene.appendChild(
+        point
+    );
+
+    setTimeout(
+        () => point.remove(),
+        650
+    );
+
+}
+
+
+/* =========================================================
+   MOVE SPIDER AWAY
+========================================================= */
+
+function moveSpiderAway(
+    clickX,
+    clickY
+){
+
+    const spiderRect =
+        spider.getBoundingClientRect();
+
+
+    const spiderCenterX =
+        spiderRect.left +
+        spiderRect.width / 2;
+
+
+    const spiderCenterY =
+        spiderRect.top +
+        spiderRect.height / 2;
+
+
+    /* -----------------------------------------------
+       ESCAPE DIRECTION
+    ----------------------------------------------- */
+
+    let dx =
+        spiderCenterX -
+        clickX;
+
+
+    let dy =
+        spiderCenterY -
+        clickY;
+
+
+    const length =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    /* -----------------------------------------------
+       RANDOM DIRECTION IF CENTER CLICK
+    ----------------------------------------------- */
+
+    if(length < 1){
+
+        const randomAngle =
+            Math.random() *
+            Math.PI *
+            2;
+
+
+        dx =
+            Math.cos(
+                randomAngle
+            );
+
+
+        dy =
+            Math.sin(
+                randomAngle
+            );
+
+    }
+
+    else{
+
+        dx /= length;
+
+        dy /= length;
+
+    }
+
+
+    /* -----------------------------------------------
+       ESCAPE DISTANCE
+    ----------------------------------------------- */
+
+    const escapeDistance =
+        250 +
+        Math.random() * 150;
+
+
+    let targetX =
+        spiderCenterX +
+        dx *
+        escapeDistance;
+
+
+    let targetY =
+        spiderCenterY +
+        dy *
+        escapeDistance;
+
+
+    /* -----------------------------------------------
+       SCREEN BOUNDARIES
+    ----------------------------------------------- */
+
+    const margin = 75;
+
+
+    targetX =
+        Math.max(
+            margin,
+            Math.min(
+                window.innerWidth -
+                margin,
+                targetX
+            )
+        );
+
+
+    targetY =
+        Math.max(
+            margin,
+            Math.min(
+                window.innerHeight -
+                margin,
+                targetY
+            )
+        );
+
+
+    /* -----------------------------------------------
+       DISTANCE
+    ----------------------------------------------- */
+
+    const moveX =
+        targetX -
+        spiderX;
+
+
+    const moveY =
+        targetY -
+        spiderY;
+
+
+    const distance =
+        Math.sqrt(
+            moveX * moveX +
+            moveY * moveY
+        );
+
+
+    /* -----------------------------------------------
+       ROTATION
+    ----------------------------------------------- */
+
+    let angle =
+        Math.atan2(
+            moveY,
+            moveX
+        )
+        *
+        180 /
+        Math.PI;
+
+
+    angle += 90;
+
+
+    /* -----------------------------------------------
+       MOVEMENT SPEED
+    ----------------------------------------------- */
+
+    const duration =
+        Math.max(
+            300,
+            Math.min(
+                1800,
+                distance * 1.8
+            )
+        );
+
+
+    /* -----------------------------------------------
+       WALKING
+    ----------------------------------------------- */
+
+    spider.classList.remove(
+        "idle"
+    );
+
+    spider.classList.add(
+        "walking"
+    );
+
+
+    spider.style.transition =
+
+    `
+    left ${duration}ms cubic-bezier(.45,.05,.35,1),
+    top ${duration}ms cubic-bezier(.45,.05,.35,1),
+    transform ${duration}ms cubic-bezier(.45,.05,.35,1)
+    `;
+
+
+    spider.style.left =
+        targetX + "px";
+
+
+    spider.style.top =
+        targetY + "px";
+
+
+    spider.style.transform =
+
+    `
+    translate(-50%,-50%)
+    rotate(${angle}deg)
+    `;
+
+
+    spiderX =
+        targetX;
+
+
+    spiderY =
+        targetY;
+
+
+    /* -----------------------------------------------
+       STOP WALKING
+    ----------------------------------------------- */
+
+    clearTimeout(
+        movementTimer
+    );
+
+
+    movementTimer =
+        setTimeout(
+            () => {
+
+                if(!gameOver){
+
+                    spider.classList.remove(
+                        "walking"
+                    );
+
+                    spider.classList.add(
+                        "idle"
+                    );
+
+                }
+
+            },
+            duration
+        );
+
+}
+
+
+/* =========================================================
+   CATCH SPIDER
+========================================================= */
+
+function catchSpider(){
+
+    gameOver = true;
+
+
+    clearTimeout(
+        movementTimer
+    );
+
+
+    /* -----------------------------------------------
+       STOP SPIDER
+    ----------------------------------------------- */
+
+    spider.classList.remove(
+        "walking"
+    );
+
+
+    spider.classList.add(
+        "caught"
+    );
+
+
+    /* -----------------------------------------------
+       HIDE CATCH TITLE
+    ----------------------------------------------- */
+
+    catchTitle.style.opacity =
+        "0";
+
+
+    catchTitle.style.visibility =
+        "hidden";
+
+
+    /* -----------------------------------------------
+       SHOW CONGRATULATIONS
+    ----------------------------------------------- */
+
+    setTimeout(
+        () => {
+
+            congratulationsTitle.classList.add(
+                "show"
+            );
+
+        },
+        300
+    );
+
+}
+
+
+/* =========================================================
+   MAIN CLICK HANDLER
+========================================================= */
+
+scene.addEventListener(
+    "click",
+    function(event){
+
+        /* ---------------------------------------------
+           GAME FINISHED
+        --------------------------------------------- */
+
+        if(gameOver){
+            return;
+        }
+
+
+        const clickX =
+            event.clientX;
+
+
+        const clickY =
+            event.clientY;
+
+
+        /* ---------------------------------------------
+           SPIDER BOUNDING BOX
+        --------------------------------------------- */
+
+        const spiderRect =
+            spider.getBoundingClientRect();
+
+
+        const spiderCenterX =
+            spiderRect.left +
+            spiderRect.width / 2;
+
+
+        const spiderCenterY =
+            spiderRect.top +
+            spiderRect.height / 2;
+
+
+        /* ---------------------------------------------
+           DISTANCE FROM SPIDER
+        --------------------------------------------- */
+
+        const distanceFromSpider =
+            Math.sqrt(
+
+                Math.pow(
+                    clickX -
+                    spiderCenterX,
+                    2
+                )
+
+                +
+
+                Math.pow(
+                    clickY -
+                    spiderCenterY,
+                    2
+                )
+
+            );
+
+
+        /*
+           Only a click on the spider
+           counts as an attempt.
+        */
+
+        if(
+
+            distanceFromSpider >
+            Math.max(
+                spiderRect.width,
+                spiderRect.height
+            ) / 2
+
+        ){
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           COUNT ATTEMPT
+        --------------------------------------------- */
+
+        attempts++;
+
+
+        createClickEffect(
+            clickX,
+            clickY
+        );
+
+
+        /* ---------------------------------------------
+           CATCH
+        --------------------------------------------- */
+
+        if(
+            attempts >=
+            catchAttempt
+        ){
+
+            catchSpider();
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           ESCAPE
+        --------------------------------------------- */
+
+        moveSpiderAway(
+            clickX,
+            clickY
+        );
+
+    }
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        spiderX =
+            Math.min(
+                spiderX,
+                window.innerWidth - 75
+            );
+
+
+        spiderY =
+            Math.min(
+                spiderY,
+                window.innerHeight - 75
+            );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
