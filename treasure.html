@@ -1,0 +1,3537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Find The Treasure</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background: #050505;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================================
+   MAIN SCENE
+========================================================= */
+
+#treasure-page {
+
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #5fb8e8 0%,
+            #a9e1f1 34%,
+            #56c8df 35%,
+            #087da0 51%,
+            #e6bd70 52%,
+            #d99b4f 100%
+        );
+
+    cursor: crosshair;
+}
+
+
+/* =========================================================
+   SKY
+========================================================= */
+
+.sky {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #2087d0 0%,
+            #6fc7ed 38%,
+            #bde9f4 51%
+        );
+}
+
+
+/* =========================================================
+   SUN
+========================================================= */
+
+.sun {
+
+    position: absolute;
+
+    width: 170px;
+    height: 170px;
+
+    right: 9%;
+    top: 7%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.95) 0%,
+            rgba(255,238,151,.9) 35%,
+            rgba(255,204,77,.2) 68%,
+            transparent 72%
+        );
+
+    filter: blur(2px);
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CLOUDS
+========================================================= */
+
+.cloud {
+
+    position: absolute;
+
+    height: 35px;
+
+    border-radius: 50px;
+
+    background: rgba(255,255,255,.72);
+
+    filter: blur(7px);
+
+    z-index: 3;
+
+    opacity: .75;
+
+    pointer-events: none;
+}
+
+.cloud::before,
+.cloud::after {
+
+    content: "";
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    background: inherit;
+}
+
+.cloud::before {
+
+    width: 75px;
+    height: 75px;
+
+    left: 25px;
+    bottom: -2px;
+}
+
+.cloud::after {
+
+    width: 105px;
+    height: 90px;
+
+    left: 75px;
+    bottom: -3px;
+}
+
+.cloud-1 {
+
+    width: 180px;
+
+    top: 17%;
+    left: 8%;
+}
+
+.cloud-2 {
+
+    width: 220px;
+
+    top: 28%;
+    right: 13%;
+
+    opacity: .45;
+}
+
+.cloud-3 {
+
+    width: 130px;
+
+    top: 9%;
+    right: 34%;
+
+    opacity: .35;
+}
+
+
+/* =========================================================
+   DISTANT MOUNTAINS
+========================================================= */
+
+.mountains {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 34%;
+
+    height: 20%;
+
+    z-index: 4;
+
+    pointer-events: none;
+}
+
+.mountain {
+
+    position: absolute;
+
+    bottom: 0;
+
+    width: 0;
+    height: 0;
+
+    border-left: 130px solid transparent;
+    border-right: 130px solid transparent;
+    border-bottom: 180px solid #467c75;
+
+    filter: drop-shadow(0 5px 3px rgba(0,0,0,.25));
+}
+
+.mountain::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: -40px;
+
+    bottom: -180px;
+
+    width: 0;
+    height: 0;
+
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 65px solid rgba(220,240,221,.7);
+}
+
+.mountain-1 {
+
+    left: 12%;
+
+    transform: scale(.75);
+}
+
+.mountain-2 {
+
+    left: 34%;
+
+    transform: scale(.55);
+}
+
+.mountain-3 {
+
+    right: 13%;
+
+    transform: scale(1.15);
+}
+
+
+/* =========================================================
+   OCEAN
+========================================================= */
+
+.ocean {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 42%;
+
+    height: 27%;
+
+    z-index: 5;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #43c6dd,
+            #1599b7 45%,
+            #066c91 100%
+        );
+
+    box-shadow:
+        inset 0 10px 30px rgba(255,255,255,.18);
+}
+
+
+/* =========================================================
+   OCEAN WAVES
+========================================================= */
+
+.wave {
+
+    position: absolute;
+
+    width: 180%;
+
+    height: 55px;
+
+    left: -40%;
+
+    border-top:
+        4px solid rgba(255,255,255,.6);
+
+    border-radius: 50%;
+
+    opacity: .65;
+
+    animation:
+        waveMove 7s linear infinite;
+}
+
+.wave-1 {
+    top: 15%;
+}
+
+.wave-2 {
+    top: 42%;
+
+    animation-delay: -2s;
+
+    opacity: .4;
+}
+
+.wave-3 {
+    top: 67%;
+
+    animation-delay: -4s;
+
+    opacity: .3;
+}
+
+@keyframes waveMove {
+
+    from {
+        transform: translateX(-5%);
+    }
+
+    to {
+        transform: translateX(5%);
+    }
+}
+
+
+/* =========================================================
+   DISTANT SKULL ISLAND
+========================================================= */
+
+.skull-island {
+
+    position: absolute;
+
+    right: 8%;
+
+    top: 29%;
+
+    width: 330px;
+    height: 240px;
+
+    z-index: 6;
+
+    pointer-events: none;
+}
+
+
+/* island body */
+
+.skull-body {
+
+    position: absolute;
+
+    left: 50px;
+    bottom: 0;
+
+    width: 235px;
+    height: 210px;
+
+    border-radius:
+        48%
+        48%
+        25%
+        25%;
+
+    background:
+        linear-gradient(
+            125deg,
+            #6e9074,
+            #9fa878 45%,
+            #536f5c 100%
+        );
+
+    clip-path:
+        polygon(
+            13% 100%,
+            9% 73%,
+            17% 48%,
+            24% 25%,
+            40% 10%,
+            57% 4%,
+            72% 12%,
+            86% 31%,
+            94% 58%,
+            91% 81%,
+            100% 100%
+        );
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.25);
+}
+
+
+/* skull eyes */
+
+.skull-eye {
+
+    position: absolute;
+
+    width: 62px;
+    height: 75px;
+
+    top: 77px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            #07151b 0%,
+            #111 70%,
+            transparent 72%
+        );
+
+    transform:
+        rotate(-12deg);
+}
+
+.skull-eye.left {
+    left: 88px;
+}
+
+.skull-eye.right {
+    right: 83px;
+
+    transform:
+        rotate(12deg);
+}
+
+
+/* skull nose */
+
+.skull-nose {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 135px;
+
+    width: 34px;
+    height: 40px;
+
+    transform:
+        translateX(-50%);
+
+    background: #17272b;
+
+    clip-path:
+        polygon(
+            50% 0,
+            100% 100%,
+            0 100%
+        );
+}
+
+
+/* skull teeth */
+
+.skull-mouth {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 166px;
+
+    width: 100px;
+    height: 35px;
+
+    transform:
+        translateX(-50%);
+
+    border:
+        4px solid #273a37;
+
+    border-top: none;
+
+    border-radius:
+        0 0 50px 50px;
+}
+
+.skull-mouth::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 7px;
+
+    height: 4px;
+
+    background: #273a37;
+
+    box-shadow:
+        17px 0 0 #273a37,
+        34px 0 0 #273a37,
+        51px 0 0 #273a37,
+        68px 0 0 #273a37;
+}
+
+
+/* island vegetation */
+
+.skull-island::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 20px;
+    bottom: 5px;
+
+    width: 300px;
+    height: 45px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            #356b43,
+            transparent 65%
+        );
+
+    filter: blur(4px);
+}
+
+
+/* =========================================================
+   BEACH
+========================================================= */
+
+.beach {
+
+    position: absolute;
+
+    left: -5%;
+
+    bottom: -8%;
+
+    width: 110%;
+
+    height: 49%;
+
+    z-index: 7;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 30%,
+            #ffe8a7,
+            #eec477 45%,
+            #c78c4b 100%
+        );
+
+    clip-path:
+        polygon(
+            0 24%,
+            15% 17%,
+            30% 13%,
+            48% 18%,
+            64% 13%,
+            82% 19%,
+            100% 8%,
+            100% 100%,
+            0 100%
+        );
+
+    box-shadow:
+        inset 0 30px 45px rgba(255,255,255,.25);
+}
+
+
+/* =========================================================
+   SAND TEXTURE
+========================================================= */
+
+.sand-dot {
+
+    position: absolute;
+
+    width: 5px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: rgba(110,74,37,.28);
+
+    z-index: 8;
+
+    transform: rotate(25deg);
+}
+
+
+/* =========================================================
+   PALM TREES
+========================================================= */
+
+.palm {
+
+    position: absolute;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+
+/* trunk */
+
+.palm-trunk {
+
+    position: absolute;
+
+    width: 28px;
+    height: 330px;
+
+    background:
+        repeating-linear-gradient(
+            175deg,
+            #5a351a 0px,
+            #6d421e 12px,
+            #43250f 17px
+        );
+
+    border-radius: 50%;
+
+    transform-origin:
+        bottom center;
+}
+
+
+/* leaves */
+
+.palm-leaves {
+
+    position: absolute;
+
+    width: 250px;
+    height: 150px;
+
+    left: -110px;
+    top: -105px;
+}
+
+.leaf {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 145px;
+    height: 28px;
+
+    transform-origin:
+        left center;
+
+    border-radius:
+        100% 0 100% 0;
+
+    background:
+        linear-gradient(
+            to right,
+            #1f6939,
+            #4b9c49
+        );
+
+    box-shadow:
+        inset 0 4px 5px rgba(255,255,255,.12);
+}
+
+.leaf-1 {
+    transform: rotate(-5deg);
+}
+
+.leaf-2 {
+    transform: rotate(35deg);
+}
+
+.leaf-3 {
+    transform: rotate(75deg);
+}
+
+.leaf-4 {
+    transform: rotate(120deg);
+}
+
+.leaf-5 {
+    transform: rotate(165deg);
+}
+
+.leaf-6 {
+    transform: rotate(215deg);
+}
+
+.leaf-7 {
+    transform: rotate(255deg);
+}
+
+.leaf-8 {
+    transform: rotate(300deg);
+}
+
+
+.palm-left {
+
+    left: -20px;
+    bottom: 25%;
+
+    width: 250px;
+    height: 390px;
+}
+
+.palm-left .palm-trunk {
+
+    left: 120px;
+    bottom: 0;
+
+    transform:
+        rotate(-8deg);
+}
+
+
+.palm-right {
+
+    right: -45px;
+    top: 5%;
+
+    width: 250px;
+    height: 350px;
+}
+
+.palm-right .palm-trunk {
+
+    right: 90px;
+    bottom: 0;
+
+    height: 310px;
+
+    transform:
+        rotate(13deg);
+}
+
+
+/* =========================================================
+   FOREGROUND VEGETATION
+========================================================= */
+
+.bush {
+
+    position: absolute;
+
+    z-index: 18;
+
+    width: 220px;
+    height: 110px;
+
+    border-radius:
+        50% 50% 0 0;
+
+    background:
+        radial-gradient(
+            circle at 20% 80%,
+            #164c29 0 20%,
+            transparent 21%
+        ),
+        radial-gradient(
+            circle at 45% 65%,
+            #236d35 0 25%,
+            transparent 26%
+        ),
+        radial-gradient(
+            circle at 75% 75%,
+            #2e7b3d 0 24%,
+            transparent 25%
+        );
+}
+
+
+/* =========================================================
+   ROCKS
+========================================================= */
+
+.rock {
+
+    position: absolute;
+
+    z-index: 13;
+
+    background:
+        linear-gradient(
+            135deg,
+            #77705f,
+            #403d38 60%,
+            #292824
+        );
+
+    box-shadow:
+        inset 12px 8px 15px rgba(255,255,255,.12),
+        0 12px 20px rgba(0,0,0,.3);
+
+    clip-path:
+        polygon(
+            7% 100%,
+            0 48%,
+            25% 15%,
+            54% 0,
+            82% 21%,
+            100% 57%,
+            88% 100%
+        );
+}
+
+.rock-1 {
+
+    left: 8%;
+    bottom: 10%;
+
+    width: 180px;
+    height: 115px;
+}
+
+.rock-2 {
+
+    right: 4%;
+    bottom: 13%;
+
+    width: 230px;
+    height: 150px;
+}
+
+.rock-3 {
+
+    left: 35%;
+    bottom: 23%;
+
+    width: 90px;
+    height: 55px;
+}
+
+
+/* =========================================================
+   WOODEN SIGN
+========================================================= */
+
+.sign-board {
+
+    position: absolute;
+
+    left: 5%;
+
+    top: 9%;
+
+    z-index: 25;
+
+    width: 430px;
+
+    padding:
+        25px 35px 30px;
+
+    transform:
+        rotate(-4deg);
+
+    background:
+        linear-gradient(
+            175deg,
+            #8b4f25,
+            #6a3519 50%,
+            #3d1d0e
+        );
+
+    border:
+        5px solid #32170a;
+
+    border-radius:
+        10px 5px 12px 6px;
+
+    box-shadow:
+
+        0 15px 25px
+        rgba(0,0,0,.45),
+
+        inset 0 2px 4px
+        rgba(255,255,255,.15);
+
+    color: #fff;
+}
+
+
+/* wood lines */
+
+.sign-board::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 12px;
+
+    border-top:
+        2px solid rgba(255,205,125,.2);
+
+    border-bottom:
+        2px solid rgba(255,205,125,.2);
+
+    pointer-events: none;
+}
+
+
+/* title */
+
+.sign-title {
+
+    position: relative;
+
+    z-index: 2;
+
+    font-family:
+        Impact,
+        "Arial Black",
+        sans-serif;
+
+    text-align: center;
+
+    line-height: .9;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+}
+
+.sign-title .find {
+
+    display: block;
+
+    font-size: 40px;
+
+    color: #fff;
+
+    text-shadow:
+        3px 4px 0 #35180d;
+}
+
+.sign-title .treasure {
+
+    display: block;
+
+    margin-top: 8px;
+
+    font-size: 62px;
+
+    color: #ffdc3d;
+
+    text-shadow:
+        4px 5px 0 #5b170d;
+}
+
+
+/* =========================================================
+   PARChMENT
+========================================================= */
+
+.parchment {
+
+    position: absolute;
+
+    left: 9%;
+
+    top: 30%;
+
+    z-index: 26;
+
+    width: 350px;
+
+    min-height: 145px;
+
+    padding:
+        30px 35px;
+
+    transform:
+        rotate(-2deg);
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4d993,
+            #e6bd70,
+            #c89148
+        );
+
+    border:
+        3px solid #805022;
+
+    box-shadow:
+        0 12px 22px rgba(0,0,0,.4);
+
+    color: #351e0e;
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    line-height: 1.35;
+
+    clip-path:
+        polygon(
+            2% 4%,
+            96% 0,
+            100% 91%,
+            95% 100%,
+            5% 96%,
+            0 9%
+        );
+}
+
+.parchment strong {
+
+    display: block;
+
+    margin-top: 12px;
+
+    font-size: 24px;
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.map {
+
+    position: absolute;
+
+    left: 4%;
+
+    bottom: 5%;
+
+    z-index: 23;
+
+    width: 250px;
+    height: 155px;
+
+    padding: 25px;
+
+    transform:
+        rotate(-8deg);
+
+    background:
+        #d9b96e;
+
+    border:
+        3px solid #68441e;
+
+    box-shadow:
+        0 12px 20px rgba(0,0,0,.4);
+
+    clip-path:
+        polygon(
+            0 5%,
+            94% 0,
+            100% 91%,
+            6% 100%
+        );
+}
+
+.map::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 55px;
+    top: 35px;
+
+    width: 110px;
+    height: 80px;
+
+    border:
+        3px solid #7d5426;
+
+    border-radius:
+        55% 45% 60% 35%;
+
+    transform:
+        rotate(-15deg);
+}
+
+.map::after {
+
+    content: "X";
+
+    position: absolute;
+
+    left: 135px;
+    top: 62px;
+
+    color: #a52319;
+
+    font-size: 40px;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   CRATES
+========================================================= */
+
+.crate {
+
+    position: absolute;
+
+    z-index: 19;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #754018 0 12px,
+            #9b5b27 13px 24px
+        );
+
+    border:
+        6px solid #4a250f;
+
+    box-shadow:
+        0 12px 18px rgba(0,0,0,.45),
+
+        inset 0 3px 4px
+        rgba(255,255,255,.1);
+}
+
+.crate::before,
+.crate::after {
+
+    content: "";
+
+    position: absolute;
+
+    background: #49230e;
+}
+
+.crate::before {
+
+    width: 100%;
+    height: 7px;
+
+    left: 0;
+    top: 50%;
+}
+
+.crate::after {
+
+    width: 7px;
+    height: 100%;
+
+    left: 50%;
+    top: 0;
+}
+
+.crate-1 {
+
+    left: 19%;
+    bottom: 10%;
+
+    width: 130px;
+    height: 110px;
+
+    transform:
+        rotate(-3deg);
+}
+
+.crate-2 {
+
+    right: 17%;
+    bottom: 17%;
+
+    width: 115px;
+    height: 90px;
+
+    transform:
+        rotate(5deg);
+}
+
+
+/* =========================================================
+   BARRELS
+========================================================= */
+
+.barrel {
+
+    position: absolute;
+
+    z-index: 20;
+
+    width: 72px;
+    height: 95px;
+
+    border-radius:
+        20px 20px 15px 15px;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #6c3515 0 10px,
+            #934d1e 11px 21px
+        );
+
+    border:
+        4px solid #48220e;
+
+    box-shadow:
+        0 10px 15px rgba(0,0,0,.4);
+}
+
+.barrel::before,
+.barrel::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: -3px;
+
+    width: 70px;
+    height: 12px;
+
+    border:
+        3px solid #3b1b0c;
+
+    border-radius: 50%;
+
+    background: transparent;
+}
+
+.barrel::before {
+    top: 18px;
+}
+
+.barrel::after {
+    bottom: 18px;
+}
+
+.barrel-1 {
+
+    left: 30%;
+
+    bottom: 19%;
+
+    transform:
+        rotate(-5deg);
+}
+
+.barrel-2 {
+
+    right: 27%;
+
+    bottom: 22%;
+
+    transform:
+        rotate(4deg)
+        scale(.8);
+}
+
+
+/* =========================================================
+   SHOVEL
+========================================================= */
+
+.shovel {
+
+    position: absolute;
+
+    right: 31%;
+
+    bottom: 16%;
+
+    z-index: 21;
+
+    width: 30px;
+    height: 230px;
+
+    transform:
+        rotate(17deg);
+}
+
+.shovel-handle {
+
+    position: absolute;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 13px;
+    height: 190px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4c2912,
+            #a26530,
+            #4c2912
+        );
+
+    border-radius: 10px;
+}
+
+.shovel-grip {
+
+    position: absolute;
+
+    top: -12px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 55px;
+    height: 30px;
+
+    border:
+        7px solid #34200f;
+
+    border-bottom: none;
+
+    border-radius:
+        30px 30px 0 0;
+}
+
+.shovel-blade {
+
+    position: absolute;
+
+    bottom: -15px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 65px;
+    height: 75px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #777b77,
+            #303533
+        );
+
+    clip-path:
+        polygon(
+            15% 0,
+            85% 0,
+            100% 78%,
+            50% 100%,
+            0 78%
+        );
+
+    border:
+        2px solid #252725;
+}
+
+
+/* =========================================================
+   SHIPWRECK
+========================================================= */
+
+.ship {
+
+    position: absolute;
+
+    right: 8%;
+
+    bottom: 18%;
+
+    width: 430px;
+    height: 230px;
+
+    z-index: 17;
+
+    transform:
+        rotate(-5deg);
+}
+
+
+/* hull */
+
+.hull {
+
+    position: absolute;
+
+    left: 30px;
+    bottom: 10px;
+
+    width: 350px;
+    height: 120px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #74401c,
+            #3b1d0d
+        );
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 0,
+            82% 80%,
+            66% 100%,
+            20% 88%,
+            5% 55%
+        );
+
+    border-bottom:
+        8px solid #281207;
+
+    box-shadow:
+        0 15px 25px rgba(0,0,0,.45);
+}
+
+
+/* ship planks */
+
+.hull::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 15px 25px;
+
+    border-top:
+        4px solid rgba(30,10,3,.7);
+
+    border-bottom:
+        4px solid rgba(30,10,3,.7);
+
+    box-shadow:
+        0 28px 0 rgba(30,10,3,.6),
+        0 56px 0 rgba(30,10,3,.5);
+}
+
+
+/* mast */
+
+.mast {
+
+    position: absolute;
+
+    left: 190px;
+
+    bottom: 75px;
+
+    width: 16px;
+    height: 260px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #3d1d0c,
+            #9a5a27,
+            #3d1d0c
+        );
+
+    transform:
+        rotate(7deg);
+
+    transform-origin:
+        bottom;
+}
+
+
+/* pirate flag */
+
+.flag {
+
+    position: absolute;
+
+    left: 199px;
+    top: 8px;
+
+    width: 130px;
+    height: 88px;
+
+    background:
+        #171717;
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 12%,
+            78% 50%,
+            100% 90%,
+            0 100%
+        );
+
+    box-shadow:
+        0 5px 10px rgba(0,0,0,.5);
+}
+
+
+/* skull on flag */
+
+.flag::after {
+
+    content: "☠";
+
+    position: absolute;
+
+    left: 42px;
+    top: 15px;
+
+    font-size: 45px;
+
+    color: white;
+}
+
+
+/* =========================================================
+   BIRD
+========================================================= */
+
+.bird {
+
+    position: absolute;
+
+    left: 41%;
+
+    bottom: 39%;
+
+    z-index: 15;
+
+    width: 70px;
+    height: 45px;
+
+    transform:
+        rotate(-5deg);
+}
+
+.bird-body {
+
+    position: absolute;
+
+    width: 55px;
+    height: 35px;
+
+    left: 10px;
+    top: 5px;
+
+    border-radius:
+        60% 60% 50% 50%;
+
+    background:
+        #d9d7ce;
+
+    box-shadow:
+        inset -15px 0 0 #4c5554;
+}
+
+.bird-head {
+
+    position: absolute;
+
+    right: 0;
+    top: 0;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    background: #eeeae0;
+}
+
+.bird-beak {
+
+    position: absolute;
+
+    right: -15px;
+    top: 10px;
+
+    width: 20px;
+    height: 9px;
+
+    background: #d69a36;
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 50%,
+            0 100%
+        );
+}
+
+.bird-eye {
+
+    position: absolute;
+
+    width: 4px;
+    height: 4px;
+
+    right: 9px;
+    top: 8px;
+
+    background: #111;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   ROPE
+========================================================= */
+
+.rope {
+
+    position: absolute;
+
+    left: 18%;
+
+    top: 0;
+
+    width: 5px;
+
+    height: 130px;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #5a3419 0 5px,
+            #b47b3d 6px 9px
+        );
+
+    z-index: 28;
+
+    transform:
+        rotate(3deg);
+}
+
+
+/* =========================================================
+   TREASURE HIDING OBJECTS
+========================================================= */
+
+.hiding-object {
+
+    position: absolute;
+
+    z-index: 35;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease;
+}
+
+.hiding-object:hover {
+
+    transform:
+        scale(1.03);
+}
+
+
+/* Hidden hit areas */
+
+.hide-1 {
+
+    left: 11%;
+    bottom: 30%;
+
+    width: 130px;
+    height: 100px;
+}
+
+.hide-2 {
+
+    left: 27%;
+    bottom: 15%;
+
+    width: 100px;
+    height: 100px;
+}
+
+.hide-3 {
+
+    left: 49%;
+    bottom: 25%;
+
+    width: 130px;
+    height: 100px;
+}
+
+.hide-4 {
+
+    right: 12%;
+    bottom: 30%;
+
+    width: 130px;
+    height: 110px;
+}
+
+.hide-5 {
+
+    right: 32%;
+    bottom: 13%;
+
+    width: 120px;
+    height: 100px;
+}
+
+.hide-6 {
+
+    left: 58%;
+    bottom: 10%;
+
+    width: 120px;
+    height: 100px;
+}
+
+
+/* =========================================================
+   GAME TITLE
+========================================================= */
+
+#game-title {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 4%;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 45;
+
+    text-align: center;
+
+    pointer-events: none;
+
+    width: 100%;
+}
+
+
+/* title */
+
+.main-title {
+
+    font-family:
+        Impact,
+        "Arial Black",
+        sans-serif;
+
+    font-size:
+        clamp(32px, 5vw, 68px);
+
+    line-height: .9;
+
+    letter-spacing: 5px;
+
+    color: #fff4d9;
+
+    text-shadow:
+
+        4px 5px 0 #34170c,
+
+        0 0 25px rgba(0,0,0,.6);
+}
+
+.main-title span {
+
+    display: block;
+
+    color: #ffd638;
+
+    font-size:
+        clamp(48px, 7vw, 90px);
+
+    text-shadow:
+
+        5px 6px 0 #7d1d0e,
+
+        0 0 20px rgba(255,190,40,.35);
+}
+
+
+/* =========================================================
+   INSTRUCTION
+========================================================= */
+
+.instruction {
+
+    margin:
+        12px auto 0;
+
+    width:
+        min(500px, 80vw);
+
+    padding:
+        14px 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0d18b,
+            #d5a957
+        );
+
+    border:
+        2px solid #71451e;
+
+    box-shadow:
+        0 7px 15px rgba(0,0,0,.4);
+
+    color: #341d0d;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(14px, 2vw, 19px);
+
+    font-style: italic;
+
+    transform:
+        rotate(-1deg);
+
+    clip-path:
+        polygon(
+            2% 4%,
+            97% 0,
+            100% 90%,
+            95% 100%,
+            4% 96%,
+            0 10%
+        );
+}
+
+
+/* =========================================================
+   ATTEMPT COUNTER
+========================================================= */
+
+.attempts {
+
+    position: absolute;
+
+    top: 24px;
+    right: 25px;
+
+    z-index: 60;
+
+    padding:
+        10px 16px;
+
+    border-radius:
+        30px;
+
+    background:
+        rgba(20,12,5,.72);
+
+    border:
+        1px solid rgba(255,218,130,.4);
+
+    backdrop-filter:
+        blur(10px);
+
+    color: #ffe4a0;
+
+    font-size: 13px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   CLICK RIPPLE
+========================================================= */
+
+.ripple {
+
+    position: absolute;
+
+    width: 25px;
+    height: 25px;
+
+    border:
+        2px solid rgba(255,255,255,.9);
+
+    border-radius: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    z-index: 70;
+
+    pointer-events: none;
+
+    animation:
+        ripple .7s ease-out forwards;
+}
+
+@keyframes ripple {
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            scale(4);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   WRONG MESSAGE
+========================================================= */
+
+.wrong-message {
+
+    position: absolute;
+
+    z-index: 75;
+
+    padding:
+        8px 15px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(18,10,4,.82);
+
+    color: #fff;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-style: italic;
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+    white-space: nowrap;
+
+    transform:
+        translate(-50%, -50%);
+
+    animation:
+        wrongMessage .9s ease forwards;
+}
+
+@keyframes wrongMessage {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -30%)
+            scale(.8);
+    }
+
+    20% {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+
+    75% {
+
+        opacity: 1;
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -100%)
+            scale(.95);
+    }
+}
+
+
+/* =========================================================
+   HIDDEN TREASURE
+========================================================= */
+
+#hidden-treasure {
+
+    position: absolute;
+
+    z-index: 40;
+
+    width: 130px;
+    height: 110px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.3);
+
+    transition:
+        opacity .6s ease,
+        transform .8s cubic-bezier(.17,.89,.32,1.28);
+}
+
+#hidden-treasure.revealed {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+}
+
+
+/* =========================================================
+   TREASURE CHEST
+========================================================= */
+
+.chest {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 100px;
+    height: 65px;
+
+    transform:
+        translateX(-50%);
+
+    background:
+        linear-gradient(
+            135deg,
+            #7a3711,
+            #b66323 45%,
+            #54230d
+        );
+
+    border:
+        5px solid #321306;
+
+    border-radius:
+        7px 7px 12px 12px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.65);
+}
+
+
+/* chest lid */
+
+.chest-lid {
+
+    position: absolute;
+
+    left: -5px;
+    top: -40px;
+
+    width: 100px;
+    height: 45px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #c16b27,
+            #67290e
+        );
+
+    border:
+        5px solid #321306;
+
+    border-radius:
+        55px 55px 5px 5px;
+
+    transform-origin:
+        bottom center;
+
+    transition:
+        transform .8s ease;
+}
+
+#hidden-treasure.revealed
+.chest-lid {
+
+    transform:
+        rotateX(-65deg);
+}
+
+
+/* metal bands */
+
+.chest-band {
+
+    position: absolute;
+
+    top: 0;
+
+    width: 11px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to right,
+            #6b4915,
+            #e0aa38,
+            #6b4915
+        );
+}
+
+.chest-band.one {
+    left: 18px;
+}
+
+.chest-band.two {
+    right: 18px;
+}
+
+
+/* lock */
+
+.chest-lock {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 20px;
+    height: 25px;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        #d9a333;
+
+    border:
+        2px solid #654410;
+
+    border-radius: 4px;
+}
+
+
+/* =========================================================
+   GOLD GLOW
+========================================================= */
+
+.treasure-glow {
+
+    position: absolute;
+
+    left: 50%;
+    top: 30%;
+
+    width: 230px;
+    height: 230px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,215,80,.85),
+            rgba(255,174,0,.35) 35%,
+            transparent 70%
+        );
+
+    filter: blur(10px);
+
+    animation:
+        glow 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(.75);
+
+        opacity: .5;
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.2);
+
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   GOLD COINS
+========================================================= */
+
+.coin {
+
+    position: absolute;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #fff0a0,
+            #e0a51f 45%,
+            #8a5710
+        );
+
+    box-shadow:
+        0 0 8px rgba(255,200,50,.8);
+
+    animation:
+        coinFloat 1.5s ease-in-out infinite;
+}
+
+.coin-1 {
+    left: 15%;
+    top: 25%;
+}
+
+.coin-2 {
+    left: 75%;
+    top: 12%;
+
+    animation-delay: .3s;
+}
+
+.coin-3 {
+    left: 65%;
+    top: 50%;
+
+    animation-delay: .7s;
+}
+
+.coin-4 {
+    left: 30%;
+    top: 50%;
+
+    animation-delay: 1s;
+}
+
+@keyframes coinFloat {
+
+    0%,
+    100% {
+        opacity: .2;
+        transform:
+            translateY(8px)
+            scale(.6);
+    }
+
+    50% {
+        opacity: 1;
+        transform:
+            translateY(-15px)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   SUCCESS OVERLAY
+========================================================= */
+
+#treasure-success {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(80,35,5,.35),
+            rgba(0,0,0,.65)
+        );
+
+    backdrop-filter:
+        blur(3px);
+
+    transition:
+        opacity .5s ease,
+        visibility .5s ease;
+}
+
+#treasure-success.show {
+
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+.success-title {
+
+    font-family:
+        Impact,
+        "Arial Black",
+        sans-serif;
+
+    font-size:
+        clamp(42px, 8vw, 90px);
+
+    color: #ffe06a;
+
+    letter-spacing: 4px;
+
+    text-shadow:
+
+        4px 5px 0 #451508,
+
+        0 0 35px
+        rgba(255,200,50,.9);
+
+    animation:
+        successPop .9s
+        cubic-bezier(.17,.89,.32,1.28);
+}
+
+.success-subtitle {
+
+    margin-top: 15px;
+
+    color: white;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(18px, 3vw, 28px);
+
+    font-style: italic;
+
+    text-shadow:
+        0 3px 8px #000;
+}
+
+@keyframes successPop {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(.4)
+            rotate(-5deg);
+    }
+
+    65% {
+
+        transform:
+            scale(1.08)
+            rotate(1deg);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            rotate(0);
+    }
+}
+
+
+/* =========================================================
+   SCREEN FLASH
+========================================================= */
+
+#flash {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 90;
+
+    background:
+        rgba(255,218,70,.35);
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+#flash.active {
+
+    animation:
+        flashAnimation .6s ease-out;
+}
+
+@keyframes flashAnimation {
+
+    0% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 900px) {
+
+    .sign-board {
+
+        width: 330px;
+
+        left: 3%;
+        top: 8%;
+    }
+
+    .sign-title .find {
+        font-size: 30px;
+    }
+
+    .sign-title .treasure {
+        font-size: 48px;
+    }
+
+    .parchment {
+
+        width: 280px;
+
+        left: 5%;
+
+        top: 28%;
+
+        font-size: 15px;
+    }
+
+    .ship {
+
+        right: -10%;
+
+        transform:
+            rotate(-5deg)
+            scale(.75);
+
+        transform-origin:
+            bottom right;
+    }
+
+    .skull-island {
+
+        right: -5%;
+
+        transform:
+            scale(.75);
+
+        transform-origin:
+            bottom right;
+    }
+}
+
+
+@media(max-width: 600px) {
+
+    #treasure-page {
+
+        min-height: 100vh;
+    }
+
+    .sun {
+
+        width: 100px;
+        height: 100px;
+    }
+
+    .sign-board {
+
+        width: 270px;
+
+        padding:
+            18px 20px;
+
+        left: 4%;
+
+        top: 7%;
+    }
+
+    .sign-title .find {
+        font-size: 25px;
+    }
+
+    .sign-title .treasure {
+        font-size: 39px;
+    }
+
+    .parchment {
+
+        width: 250px;
+
+        top: 24%;
+
+        padding:
+            20px 25px;
+
+        font-size: 14px;
+    }
+
+    .parchment strong {
+        font-size: 18px;
+    }
+
+    .skull-island {
+
+        right: -65px;
+
+        top: 27%;
+
+        transform:
+            scale(.6);
+    }
+
+    .ship {
+
+        right: -90px;
+
+        bottom: 17%;
+
+        transform:
+            rotate(-5deg)
+            scale(.58);
+    }
+
+    .map {
+
+        width: 170px;
+        height: 110px;
+
+        left: 2%;
+        bottom: 5%;
+    }
+
+    .shovel {
+
+        right: 20%;
+
+        bottom: 16%;
+
+        transform:
+            rotate(17deg)
+            scale(.75);
+    }
+
+    .attempts {
+
+        top: 15px;
+
+        right: 15px;
+
+        font-size: 10px;
+    }
+
+    .palm-left {
+
+        transform:
+            scale(.7);
+
+        transform-origin:
+            bottom left;
+    }
+
+    .palm-right {
+
+        transform:
+            scale(.65);
+
+        transform-origin:
+            top right;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration: .01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: .01ms !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<main id="treasure-page">
+
+
+    <!-- =================================================
+         SKY
+    ================================================= -->
+
+    <div class="sky"></div>
+
+    <div class="sun"></div>
+
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+
+
+    <!-- =================================================
+         DISTANT MOUNTAINS
+    ================================================= -->
+
+    <div class="mountains">
+
+        <div class="mountain mountain-1"></div>
+        <div class="mountain mountain-2"></div>
+        <div class="mountain mountain-3"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         OCEAN
+    ================================================= -->
+
+    <div class="ocean">
+
+        <div class="wave wave-1"></div>
+        <div class="wave wave-2"></div>
+        <div class="wave wave-3"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         SKULL ISLAND
+    ================================================= -->
+
+    <div class="skull-island">
+
+        <div class="skull-body"></div>
+
+        <div class="skull-eye left"></div>
+        <div class="skull-eye right"></div>
+
+        <div class="skull-nose"></div>
+
+        <div class="skull-mouth"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         BEACH
+    ================================================= -->
+
+    <div class="beach"></div>
+
+
+    <!-- =================================================
+         PALM TREE LEFT
+    ================================================= -->
+
+    <div class="palm palm-left">
+
+        <div class="palm-trunk"></div>
+
+        <div class="palm-leaves">
+
+            <div class="leaf leaf-1"></div>
+            <div class="leaf leaf-2"></div>
+            <div class="leaf leaf-3"></div>
+            <div class="leaf leaf-4"></div>
+            <div class="leaf leaf-5"></div>
+            <div class="leaf leaf-6"></div>
+            <div class="leaf leaf-7"></div>
+            <div class="leaf leaf-8"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PALM TREE RIGHT
+    ================================================= -->
+
+    <div class="palm palm-right">
+
+        <div class="palm-trunk"></div>
+
+        <div class="palm-leaves">
+
+            <div class="leaf leaf-1"></div>
+            <div class="leaf leaf-2"></div>
+            <div class="leaf leaf-3"></div>
+            <div class="leaf leaf-4"></div>
+            <div class="leaf leaf-5"></div>
+            <div class="leaf leaf-6"></div>
+            <div class="leaf leaf-7"></div>
+            <div class="leaf leaf-8"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         WOODEN PIRATE SIGN
+    ================================================= -->
+
+    <div class="sign-board">
+
+        <div class="sign-title">
+
+            <span class="find">
+                FIND THE
+            </span>
+
+            <span class="treasure">
+                TREASURE!
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PARCHMENT
+    ================================================= -->
+
+    <div class="parchment">
+
+        The treasure is hidden
+        somewhere on this island...
+
+        <strong>
+            Can you find it?
+        </strong>
+
+    </div>
+
+
+    <!-- =================================================
+         SHIPWRECK
+    ================================================= -->
+
+    <div class="ship">
+
+        <div class="mast"></div>
+
+        <div class="flag"></div>
+
+        <div class="hull"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         BIRD
+    ================================================= -->
+
+    <div class="bird">
+
+        <div class="bird-body"></div>
+
+        <div class="bird-head">
+
+            <div class="bird-eye"></div>
+
+        </div>
+
+        <div class="bird-beak"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         ROCKS
+    ================================================= -->
+
+    <div class="rock rock-1"></div>
+
+    <div class="rock rock-2"></div>
+
+    <div class="rock rock-3"></div>
+
+
+    <!-- =================================================
+         CRATES
+    ================================================= -->
+
+    <div class="crate crate-1"></div>
+
+    <div class="crate crate-2"></div>
+
+
+    <!-- =================================================
+         BARRELS
+    ================================================= -->
+
+    <div class="barrel barrel-1"></div>
+
+    <div class="barrel barrel-2"></div>
+
+
+    <!-- =================================================
+         SHOVEL
+    ================================================= -->
+
+    <div class="shovel">
+
+        <div class="shovel-grip"></div>
+
+        <div class="shovel-handle"></div>
+
+        <div class="shovel-blade"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         TREASURE MAP
+    ================================================= -->
+
+    <div class="map"></div>
+
+
+    <!-- =================================================
+         FOREGROUND BUSHES
+    ================================================= -->
+
+    <div
+        class="bush"
+        style="
+            left:-30px;
+            bottom:-10px;
+        "
+    ></div>
+
+    <div
+        class="bush"
+        style="
+            right:-50px;
+            bottom:-10px;
+        "
+    ></div>
+
+
+    <!-- =================================================
+         ROPE
+    ================================================= -->
+
+    <div class="rope"></div>
+
+
+    <!-- =================================================
+         GAME TITLE
+    ================================================= -->
+
+    <div id="game-title">
+
+        <div class="main-title">
+
+            FIND THE
+
+            <span>
+                TREASURE
+            </span>
+
+        </div>
+
+        <div class="instruction">
+
+            The treasure is hidden somewhere
+            on this island...
+
+            <br>
+
+            <strong>
+                Can you find it?
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ATTEMPTS
+    ================================================= -->
+
+    <div class="attempts">
+
+        Searches:
+        <span id="attempt-count">0</span>
+
+    </div>
+
+
+    <!-- =================================================
+         TREASURE
+    ================================================= -->
+
+    <div id="hidden-treasure">
+
+        <div class="treasure-glow"></div>
+
+        <div class="coin coin-1"></div>
+        <div class="coin coin-2"></div>
+        <div class="coin coin-3"></div>
+        <div class="coin coin-4"></div>
+
+        <div class="chest">
+
+            <div class="chest-lid"></div>
+
+            <div class="chest-band one"></div>
+
+            <div class="chest-band two"></div>
+
+            <div class="chest-lock"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SUCCESS
+    ================================================= -->
+
+    <div id="treasure-success">
+
+        <div class="success-title">
+            TREASURE FOUND!
+        </div>
+
+        <div class="success-subtitle">
+            You found the hidden treasure!
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FLASH
+    ================================================= -->
+
+    <div id="flash"></div>
+
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   GAME CONFIGURATION
+========================================================= */
+
+const game = {
+
+    attempts: 0,
+
+    found: false,
+
+    /*
+       Possible treasure locations.
+
+       These are deliberately spread around
+       the environment.
+
+       x = horizontal %
+       y = vertical %
+    */
+
+    locations: [
+
+        {
+            x: 17,
+            y: 67
+        },
+
+        {
+            x: 31,
+            y: 78
+        },
+
+        {
+            x: 54,
+            y: 72
+        },
+
+        {
+            x: 82,
+            y: 65
+        },
+
+        {
+            x: 68,
+            y: 81
+        },
+
+        {
+            x: 61,
+            y: 87
+        }
+
+    ]
+
+};
+
+
+/* =========================================================
+   RANDOM TREASURE LOCATION
+========================================================= */
+
+const treasureLocation =
+    game.locations[
+        Math.floor(
+            Math.random() *
+            game.locations.length
+        )
+    ];
+
+
+/* =========================================================
+   TREASURE ELEMENT
+========================================================= */
+
+const treasure =
+    document.getElementById(
+        "hidden-treasure"
+    );
+
+
+/* =========================================================
+   POSITION TREASURE
+========================================================= */
+
+treasure.style.left =
+    treasureLocation.x + "%";
+
+treasure.style.top =
+    treasureLocation.y + "%";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const page =
+    document.getElementById(
+        "treasure-page"
+    );
+
+const attemptCounter =
+    document.getElementById(
+        "attempt-count"
+    );
+
+const success =
+    document.getElementById(
+        "treasure-success"
+    );
+
+const flash =
+    document.getElementById(
+        "flash"
+    );
+
+
+/* =========================================================
+   WRONG CLICK MESSAGES
+========================================================= */
+
+const messages = [
+
+    "Not here, pirate...",
+
+    "Keep searching...",
+
+    "Nothing but sand!",
+
+    "The treasure is hiding...",
+
+    "Look closer...",
+
+    "Wrong spot!",
+
+    "The island is fooling you...",
+
+    "Not this time!"
+];
+
+
+/* =========================================================
+   CLICK EVENT
+========================================================= */
+
+page.addEventListener(
+    "click",
+    handleClick
+);
+
+
+/* =========================================================
+   HANDLE CLICK
+========================================================= */
+
+function handleClick(event) {
+
+    if (game.found) {
+        return;
+    }
+
+
+    const rect =
+        page.getBoundingClientRect();
+
+
+    const clickX =
+        event.clientX -
+        rect.left;
+
+
+    const clickY =
+        event.clientY -
+        rect.top;
+
+
+    /* ---------------------------------------------
+       Create click ripple
+    --------------------------------------------- */
+
+    createRipple(
+        clickX,
+        clickY
+    );
+
+
+    /* ---------------------------------------------
+       Convert treasure position
+       into pixels
+    --------------------------------------------- */
+
+    const treasureX =
+        rect.width *
+        treasureLocation.x /
+        100;
+
+
+    const treasureY =
+        rect.height *
+        treasureLocation.y /
+        100;
+
+
+    /* ---------------------------------------------
+       Calculate distance
+    --------------------------------------------- */
+
+    const distance =
+        Math.sqrt(
+
+            Math.pow(
+                clickX - treasureX,
+                2
+            )
+
+            +
+
+            Math.pow(
+                clickY - treasureY,
+                2
+            )
+
+        );
+
+
+    /*
+       Detection radius.
+
+       Make smaller = harder
+       Make larger = easier
+    */
+
+    const detectionRadius =
+        Math.min(
+            rect.width,
+            rect.height
+        ) * 0.075;
+
+
+    /* ---------------------------------------------
+       FOUND
+    --------------------------------------------- */
+
+    if (
+        distance <= detectionRadius
+    ) {
+
+        revealTreasure();
+
+        return;
+    }
+
+
+    /* ---------------------------------------------
+       WRONG
+    --------------------------------------------- */
+
+    game.attempts++;
+
+    attemptCounter.textContent =
+        game.attempts;
+
+    showWrongMessage(
+        clickX,
+        clickY
+    );
+
+}
+
+
+/* =========================================================
+   CLICK RIPPLE
+========================================================= */
+
+function createRipple(
+    x,
+    y
+) {
+
+    const ripple =
+        document.createElement(
+            "div"
+        );
+
+    ripple.className =
+        "ripple";
+
+    ripple.style.left =
+        x + "px";
+
+    ripple.style.top =
+        y + "px";
+
+
+    page.appendChild(
+        ripple
+    );
+
+
+    setTimeout(
+        () => ripple.remove(),
+        700
+    );
+
+}
+
+
+/* =========================================================
+   WRONG CLICK MESSAGE
+========================================================= */
+
+function showWrongMessage(
+    x,
+    y
+) {
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+    message.className =
+        "wrong-message";
+
+    message.textContent =
+        messages[
+            Math.floor(
+                Math.random() *
+                messages.length
+            )
+        ];
+
+
+    message.style.left =
+        x + "px";
+
+    message.style.top =
+        y + "px";
+
+
+    page.appendChild(
+        message
+    );
+
+
+    setTimeout(
+        () => message.remove(),
+        900
+    );
+
+}
+
+
+/* =========================================================
+   REVEAL TREASURE
+========================================================= */
+
+function revealTreasure() {
+
+    game.found = true;
+
+
+    /*
+       Reveal chest
+    */
+
+    treasure.classList.add(
+        "revealed"
+    );
+
+
+    /*
+       Golden flash
+    */
+
+    flash.classList.add(
+        "active"
+    );
+
+
+    /*
+       Wait for chest animation
+       then show success
+    */
+
+    setTimeout(
+        () => {
+
+            success.classList.add(
+                "show"
+            );
+
+        },
+        900
+    );
+
+}
+
+
+/* =========================================================
+   TEST MODE
+========================================================= */
+
+/*
+   Press "T" on keyboard
+   to reveal the treasure.
+
+   This is only useful while
+   developing/testing the game.
+*/
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key.toLowerCase()
+            === "t"
+        ) {
+
+            revealTreasure();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVENT IMAGE DRAGGING
+========================================================= */
+
+document.addEventListener(
+    "dragstart",
+    function(event) {
+
+        event.preventDefault();
+
+    }
+);
+
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+/*
+   Open browser console to see
+   where the treasure is currently hidden.
+
+   Remove this later.
+*/
+
+console.log(
+    "Treasure location:",
+    treasureLocation
+);
+
+</script>
+
+</body>
+</html>

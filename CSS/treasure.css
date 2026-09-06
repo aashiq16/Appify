@@ -1,0 +1,271 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background: #050505;
+}
+
+
+/* =========================================
+   MAIN PAGE
+========================================= */
+
+#treasure-page {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: #050505;
+}
+
+
+/* =========================================
+   SCENE LAYERS
+========================================= */
+
+#sky,
+#island,
+#ocean,
+#beach,
+#environment,
+#treasure-area,
+#click-effects,
+#game-title,
+#treasure-success {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =========================================
+   Z-INDEX
+========================================= */
+
+#sky {
+    z-index: 1;
+}
+
+#island {
+    z-index: 2;
+}
+
+#ocean {
+    z-index: 3;
+}
+
+#beach {
+    z-index: 4;
+}
+
+#environment {
+    z-index: 5;
+}
+
+#game-title {
+    z-index: 20;
+}
+
+#treasure-area {
+    z-index: 15;
+}
+
+#click-effects {
+    z-index: 30;
+}
+
+#treasure-success {
+    z-index: 50;
+}
+
+
+/* =========================================
+   SKY
+========================================= */
+
+#sky {
+    /* Build sky here */
+}
+
+
+/* =========================================
+   DISTANT ISLAND
+========================================= */
+
+#island {
+    /* Build island here */
+}
+
+
+/* =========================================
+   OCEAN
+========================================= */
+
+#ocean {
+    /* Build ocean here */
+}
+
+
+/* =========================================
+   BEACH
+========================================= */
+
+#beach {
+    /* Build sand here */
+}
+
+
+/* =========================================
+   ENVIRONMENT
+========================================= */
+
+#palm-trees {
+    position: absolute;
+}
+
+#rocks {
+    position: absolute;
+}
+
+#shipwreck {
+    position: absolute;
+}
+
+#barrels {
+    position: absolute;
+}
+
+#crates {
+    position: absolute;
+}
+
+#signs {
+    position: absolute;
+}
+
+#map {
+    position: absolute;
+}
+
+#shovel {
+    position: absolute;
+}
+
+#plants {
+    position: absolute;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+#game-title {
+    text-align: center;
+
+    pointer-events: none;
+}
+
+#game-title h1 {
+    /* Pirate title styling */
+}
+
+#game-title p {
+    /* Parchment/instruction styling */
+}
+
+
+/* =========================================
+   HIDDEN TREASURE
+========================================= */
+
+#hidden-treasure {
+    position: absolute;
+
+    /* JavaScript will eventually
+       determine this location */
+
+    left: 50%;
+    top: 70%;
+
+    transform: translate(-50%, -50%);
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   TREASURE CHEST
+========================================= */
+
+#treasure-chest {
+    /* Chest design */
+}
+
+
+/* =========================================
+   TREASURE GLOW
+========================================= */
+
+#treasure-glow {
+    /* Golden glow */
+}
+
+
+/* =========================================
+   SUCCESS
+========================================= */
+
+#treasure-success {
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+}
+
+#treasure-success h2 {
+    /* Success title */
+}
+
+#treasure-success p {
+    /* Success subtitle */
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    #game-title h1 {
+        /* Mobile title */
+    }
+
+}
